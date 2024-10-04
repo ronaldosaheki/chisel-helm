@@ -16,6 +16,9 @@ image:
   tag: ""
   customRegistry: #registry.myorg.com
 
+credentials:
+  password: ""
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
