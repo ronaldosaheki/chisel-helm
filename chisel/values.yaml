@@ -60,6 +60,10 @@ tolerations: []
 
 affinity: {}
 
+extraVolumes: []
+
+extraVolumeMounts: []
+
 args:
   auth:
   host:
