@@ -130,7 +130,7 @@ spec:
                   name: {{ include "chisel.fullname" . }}-secret
                   key: key
           {{- else }}{{- /* if eq .Values.mode "server" */}}
-           {{- if or (and .Values.credentials .Values.credentials.user .Values.credentials.password) .Values.args.fingerprint }}
+           {{- if or (and .Values.credentials .Values.credentials.user .Values.credentials.password) .Values.args.fingerprint .Values.externalSecretName }}
           env:
             {{- if and .Values.credentials .Values.credentials.user .Values.credentials.password }}
             - name: AUTH
@@ -138,6 +138,13 @@ spec:
                 secretKeyRef:
                   name: {{ include "chisel.fullname" . }}-secret
                   key: auth
+            {{- end }}
+            {{- if .Values.externalSecretName }}
+            - name: AUTH
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.externalSecretName  }}
+                  key: auth            
             {{- end }}
             {{- if .Values.args.fingerprint }}
             - name: FINGERPRINT

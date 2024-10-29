@@ -64,6 +64,8 @@ extraVolumes: []
 
 extraVolumeMounts: []
 
+externalSecretName: ""
+
 args:
   auth:
   host:
