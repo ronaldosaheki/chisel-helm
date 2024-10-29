@@ -2,7 +2,7 @@ suite: test deployment
 templates:
   - deployment.yaml
 tests:
-  - it: Client mode - should add extraVolume and volumeMounts
+  - it: Client mode - should add extraVolume and volumeMounts and not add server mounts
     set:
       extraVolumes:
       - name: mount-ca
@@ -22,3 +22,24 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].volumeMounts[0].subPath
           value: ca-cert.pem
+      - lengthEqual:
+          path: spec.template.spec.containers[0].volumeMounts
+          count: 1
+      - lengthEqual:
+          path: spec.template.spec.volumes
+          count: 1
+          
+  - it: Client mode - set externalSecretName
+    set:
+      externalSecretName: externalSecret
+      mode: client
+      args:
+        server: https://chisel.example.org
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].env[0].name
+          value: AUTH
+      - lengthEqual:
+          path: spec.template.spec.containers[0].env
+          count: 1
+ 

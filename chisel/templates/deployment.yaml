@@ -194,9 +194,11 @@ spec:
           {{- if .Values.extraVolumeMounts }}
           {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
           {{- end }}
+          {{- if and (eq .Values.mode "server")  (gt (len .Values.clients) 0) }}
             - name: chisel-config-map
               mountPath: /etc/chisel/users.json
               subPath: users.json
+          {{- end }}
         {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
@@ -215,8 +217,10 @@ spec:
       {{- if .Values.extraVolumes }}
       {{- toYaml .Values.extraVolumes | nindent 8 }}
       {{- end }}
+      {{- if and (eq .Values.mode "server")  (gt (len .Values.clients) 0) }}
         - name: chisel-config-map
           configMap:
             name: {{ include "chisel.fullname" . }}-config
             defaultMode: 0444
+      {{- end }}
     {{- end }}
