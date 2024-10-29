@@ -182,13 +182,15 @@ spec:
          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-        {{- if and (eq .Values.mode "server")  (gt (len .Values.clients) 0) }}
+        {{- if or (and (eq .Values.mode "server")  (gt (len .Values.clients) 0)) .Values.extraVolumeMounts }}
           volumeMounts:
+          {{- if .Values.extraVolumeMounts }}
+          {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
+          {{- end }}
+          {{- if and (eq .Values.mode "server")  (gt (len .Values.clients) 0) }}
             - name: chisel-config-map
               mountPath: /etc/chisel/users.json
               subPath: users.json
-          {{- if .Values.extraVolumeMounts }}
-          {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
           {{- end }}
         {{- end }}
       {{- with .Values.nodeSelector }}
@@ -203,13 +205,15 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-    {{- if and (eq .Values.mode "server")  (gt (len .Values.clients) 0) }}
+    {{- if or (and (eq .Values.mode "server")  (gt (len .Values.clients) 0)) .Values.extraVolumes }}
       volumes:
+      {{- if .Values.extraVolumes }}
+      {{- toYaml .Values.extraVolumes | nindent 8 }}
+      {{- end }}
+      {{- if and (eq .Values.mode "server")  (gt (len .Values.clients) 0) }}
         - name: chisel-config-map
           configMap:
             name: {{ include "chisel.fullname" . }}-config
             defaultMode: 0444
-      {{- if .Values.extraVolumes }}
-      {{- toYaml .Values.extraVolumes | nindent 8 }}
       {{- end }}
     {{- end }}
