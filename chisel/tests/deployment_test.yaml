@@ -1,0 +1,24 @@
+suite: test deployment
+templates:
+  - deployment.yaml
+tests:
+  - it: Client mode - should add extraVolume and volumeMounts
+    set:
+      extraVolumes:
+      - name: mount-ca
+        configMap:
+          name: mount-ca
+      extraVolumeMounts:
+      - name: mount-ca
+        mountPath: /etc/ssl/certs/ca-cert.pem
+        subPath: ca-cert.pem
+      mode: client
+      args:
+        server: https://chisel.example.org
+    asserts:
+      - equal:
+          path: spec.template.spec.volumes[0].name
+          value: mount-ca
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[0].subPath
+          value: ca-cert.pem
